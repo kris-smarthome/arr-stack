@@ -1,0 +1,137 @@
+version: "3.0"
+
+services:
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+    volumes:
+      - ${CDATA}/qbittorrent:/config
+      - ${ADATA}/app_data/downloads:/downloads:rw
+      - ${ADATA}/media:/media:rw
+    networks:
+      - secure
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    restart: unless-stopped
+    ports:
+      - 9696:9696
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CDATA}/prowlarr:/config
+      - ${ADATA}/app_data/downloads:/downloads:rw
+      - ${ADATA}/media:/media:rw
+    networks:
+      - secure
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    ports:
+      - 7878:7878
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CDATA}/radarr:/config
+      - ${ADATA}/app_data/downloads:/downloads:rw
+      - ${ADATA}/media:/media:rw
+    networks:
+      - secure
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    ports:
+      - 8989:8989
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CDATA}/sonarr:/config
+      - ${ADATA}/app_data/downloads:/downloads:rw
+      - ${ADATA}/media:/media:rw
+    networks:
+      - secure
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    restart: unless-stopped
+    ports:
+      - 8686:8686
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CDATA}/lidarr:/config
+      - ${ADATA}/app_data/downloads:/downloads:rw
+      - ${ADATA}/media:/media:rw
+    networks:
+      - secure
+
+  tautulli:
+    image: lscr.io/linuxserver/tautulli:latest
+    container_name: tautulli
+    restart: unless-stopped
+    ports:
+      - 8181:8181
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${CDATA}/tautulli:/config
+    networks:
+      - secure
+
+  recyclarr:
+    image: ghcr.io/recyclarr/recyclarr
+    container_name: recyclarr
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    init: true
+    environment: 
+      - TZ=${TZ}
+    user: 1000:1000
+    volumes:
+      - ${CDATA}/recyclarr:/config
+    networks:
+      - secure
+
+networks:
+  secure:
+    driver: bridge
