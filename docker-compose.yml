@@ -114,6 +114,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ${CDATA}/tautulli:/config
+      - /var/lib/plexmediaserver/Library/Application\ Support/Plex\ Media\ Server:/logs
     networks:
       - secure
 
